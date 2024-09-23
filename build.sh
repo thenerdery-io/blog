@@ -4,8 +4,10 @@ chmod +x dotnet-install.sh
 ./dotnet-install.sh -c 8.0 -InstallDir ./dotnet
 ./dotnet/dotnet --version
 ./dotnet/dotnet build .
-npm install -D tailwindcss
-npm --prefix ./MyApp run build
 pwd
 ls -al
-./dotnet/dotnet run --AppTasks=prerender --environment Production --BaseUrl "https://thenerdery.io" --project ./MyApp
+npm install -D tailwindcss
+pwd
+ls -al
+npm --prefix ./MyApp run build
+/opt/buildhome/repo/dotnet/dotnet run --AppTasks=prerender --environment Production --BaseUrl "https://thenerdery.io" --project /opt/buildhome/repo/MyApp
