@@ -6,4 +6,6 @@ chmod +x dotnet-install.sh
 ./dotnet/dotnet build .
 npm install -D tailwindcss
 npm --prefix ./MyApp run build
+pwd
+ls -al
 ./dotnet/dotnet run --AppTasks=prerender --environment Production --BaseUrl "https://thenerdery.io" --project ./MyApp
