@@ -221,19 +221,21 @@
     float: left;
     margin-left: -.87em;
     padding-right: .23em;
-    font-weight: 500;
+    margin-top:-.2em;
+    font-weight: 200;
     user-select: none;
     opacity: 0;
     transition: color .25s,opacity .25s;
-    color: rgb(14 165 233);
+    color: rgb(0, 0, 0);
     text-decoration: none;
+    font-size: 1.5em;
 }
 .header-anchor:before {
-    content: "#"
+    content: "∞"
 }
 .header-anchor:hover:before {
-    color: rgb(14 165 233);
-    text-decoration: underline;
+    color: rgb(0, 0, 0);
+    text-decoration: none;
 }
 h1:hover .header-anchor, h1 .header-anchor:focus, h2:hover .header-anchor, h2 .header-anchor:focus, h3:hover .header-anchor, h3 .header-anchor:focus, h4:hover .header-anchor, h4 .header-anchor:focus {
     opacity: 1;

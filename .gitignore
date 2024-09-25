@@ -6,6 +6,8 @@
 # Custom
 meta/
 dist/
+.obsidian
+package-lock.json
 
 # User-specific files
 *.suo

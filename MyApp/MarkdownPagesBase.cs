@@ -110,7 +110,7 @@ public abstract class MarkdownPagesBase<T>(ILogger log, IWebHostEnvironment env,
         var builder = new MarkdownPipelineBuilder()
             .UseYamlFrontMatter()
             .UseAdvancedExtensions()
-            .UseAutoLinkHeadings()
+            .UseAutoLinkHeadings(this)
             .UseHeadingsMap()
             .UseCustomContainers(MarkdigConfig.Instance.ConfigureContainers);
         MarkdigConfig.Instance.ConfigurePipeline?.Invoke(builder);
@@ -314,6 +314,11 @@ public struct HeadingInfo(int level, string id, string content)
 /// <seealso cref="HtmlObjectRenderer{TObject}" />
 public class AutoLinkHeadingRenderer : HtmlObjectRenderer<HeadingBlock>
 {
+    public AutoLinkHeadingRenderer(string relativeHtmlPath)
+    {
+        this._relativeHtmlPath = relativeHtmlPath;
+    }
+    private string _relativeHtmlPath;
     private static readonly string[] HeadingTexts = [
         "h1",
         "h2",
@@ -345,9 +350,11 @@ public class AutoLinkHeadingRenderer : HtmlObjectRenderer<HeadingBlock>
         var attrs = obj.TryGetAttributes();
         if (attrs?.Id != null && obj.Level <= 4)
         {
-            renderer.Write("<a class=\"header-anchor\" href=\"javascript:;\" onclick=\"location.hash='#");
-            renderer.Write(attrs.Id);
-            renderer.Write("'\" aria-label=\"Permalink\">&ZeroWidthSpace;</a>");
+            //renderer.Write("<a class=\"header-anchor\" href=\"javascript:;\" onclick=\"location.hash='#");
+            //renderer.Write($"🔗{attrs.Id}");
+            //renderer.Write("'\" aria-label=\"Permalink\">&ZeroWidthSpace;</a>");
+
+            renderer.Write($"<a class=\"header-anchor\" href=\"{this._relativeHtmlPath}#{attrs.Id}\" aria-label=\"Permalink\">&ZeroWidthSpace;</a>");
         }
 
         if (renderer.EnableHtmlForBlock)
@@ -364,13 +371,19 @@ public class AutoLinkHeadingRenderer : HtmlObjectRenderer<HeadingBlock>
 
 public class AutoLinkHeadingsExtension : IMarkdownExtension
 {
+    private string _relativeHtmlPath;
+    public AutoLinkHeadingsExtension(string relativeHtmlPath)
+    {
+        this._relativeHtmlPath = relativeHtmlPath;
+    }
+
     public void Setup(MarkdownPipelineBuilder pipeline)
     {
     }
 
     public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
     {
-        renderer.ObjectRenderers.Replace<HeadingRenderer>(new AutoLinkHeadingRenderer());
+        renderer.ObjectRenderers.Replace<HeadingRenderer>(new AutoLinkHeadingRenderer(_relativeHtmlPath));
     }
 }
 
@@ -934,9 +947,20 @@ public static class MarkdigExtensions
     /// <summary>
     /// Uses the auto-identifier extension.
     /// </summary>
-    public static MarkdownPipelineBuilder UseAutoLinkHeadings(this MarkdownPipelineBuilder pipeline)
+    public static MarkdownPipelineBuilder UseAutoLinkHeadings(this MarkdownPipelineBuilder pipeline, object markdownFile)
     {
-        pipeline.Extensions.AddIfNotAlready(new AutoLinkHeadingsExtension());
+        var relativeHtmlPath = string.Empty;
+
+        if(markdownFile.GetType() == typeof(MarkdownBlog))
+        {
+            var t = ((MarkdownBlog)markdownFile).VisiblePosts.FirstOrDefault();
+            if(t != null)
+            {
+                relativeHtmlPath = $"/posts/{t.Slug}";
+            }
+        }
+
+        pipeline.Extensions.AddIfNotAlready(new AutoLinkHeadingsExtension(relativeHtmlPath));
         return pipeline;
     }
 

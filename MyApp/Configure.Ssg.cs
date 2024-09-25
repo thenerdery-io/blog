@@ -12,8 +12,6 @@ public class ConfigureSsg : IHostingStartup
             services.AddSingleton<RazorPagesEngine>();
             services.AddSingleton<MarkdownIncludes>();
             services.AddSingleton<MarkdownPages>();
-            services.AddSingleton<MarkdownWhatsNew>();
-            services.AddSingleton<MarkdownVideos>();
             services.AddSingleton<MarkdownBlog>();
             services.AddSingleton<MarkdownMeta>();
         })
@@ -36,18 +34,14 @@ public class ConfigureSsg : IHostingStartup
 
                 var includes = appHost.Resolve<MarkdownIncludes>();
                 var pages = appHost.Resolve<MarkdownPages>();
-                var whatsNew = appHost.Resolve<MarkdownWhatsNew>();
-                var videos = appHost.Resolve<MarkdownVideos>();
                 var blogPosts = appHost.Resolve<MarkdownBlog>();
                 var meta = appHost.Resolve<MarkdownMeta>();
 
                 //blogPosts.Authors = BlogConfig.Instance.Authors;
-                meta.Features = [pages, whatsNew, videos, blogPosts];
+                meta.Features = [pages, blogPosts];
                 
                 includes.LoadFrom("_includes");
                 pages.LoadFrom("_pages");
-                whatsNew.LoadFrom("_whatsnew");
-                videos.LoadFrom("_videos");
                 blogPosts.LoadFrom("_posts");
             },
             afterAppHostInit: appHost =>
