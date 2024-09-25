@@ -1,21 +1,48 @@
 ---
-title: ASP.NET Core JWT Identity Auth
-summary: Learn about integration and value added features of ASP.NET Core JWT Identity Auth   
-tags: [servicestack,.net8,auth]
+title: Hosting a blog using Razor SSG and Cloudflare Pages
+summary: How I host a modern blog for free using static HTML content and Cloudflare's global content delivery network
+tags:
+  - .net
+  - GitHub
 image: https://images.unsplash.com/photo-1618482914248-29272d021005?crop=entropy&fit=crop&h=1000&w=2000
-author: Brandon Foley
+author: Zachary Johnson
 ---
 
-JWTs enable stateless authentication of clients without servers needing to maintain any Auth state in server infrastructure
-or perform any I/O to validate a token. As such,
-[JWTs are a popular choice for Microservices](https://docs.servicestack.net/auth/jwt-authprovider#stateless-auth-microservices)
-as they only need to configured with confidential keys to validate access.
+The number of choices for hosting a blog in 2024 is large enough to be downright paralyzing for mere mortals; between the multiple [hosting providers](https://blog.hubspot.com/website/best-blog-hosting-sites), numerous [content management systems](https://neilpatel.com/blog/best-content-management-systems/) and [frameworks](https://en.wikipedia.org/wiki/Web_framework), and an infinite number of themes and plugins there are literally millions of options.  While it's certainly possible to find turnkey blogging solutions—and realistically almost every blogger *should* do exactly that—I personally couldn't help but fall in love with the idea of static sites hosted for free on a global content delivery network.  From a reader perspective there's no better solution for performance, and for a webmaster there's no better solution in terms of security or cost.  It's really the best game in town if you're willing to do a bit of nerdery at the outset...
 
-### ASP.NET Core JWT Authentication
+## Table of contents
+1. [What is a static site (generator)](/posts/how-my-blog-works#what-is-a-static-site-generator)
 
-ServiceStack's JWT Identity Auth reimplements many of the existing [ServiceStack JWT AuthProvider](https://docs.servicestack.net/auth/jwt-authprovider)
-features but instead of its own implementation, integrates with and utilizes ASP.NET Core's built-in JWT Authentication that's
-configurable in .NET Apps with the `.AddJwtBearer()` extension method, e.g:
+### What is a static site (generator)?
+A static site is essentially a collection of content that needs no server-side rendering: html files and all of the associated cascading style sheets, images, javascript files, etc. hosted on a standalone web server.  A static site *generator* is simply a tool for converting a dynamic site into one that is static.
+
+Because a static site doesn't require server-side rendering and has no dependencies on a database or other complexities, the attack surface all but disappears and hosting charges range from free to just a few dollars per month—even for sites with high traffic!
+
+Converting a dynamic site into one that is static may seem counterintuitive—why bother creating a dynamic site if the goal is a static site?—but let's not forget what's great about dynamic sites: code reuse and separating the developer experience from that of the content author.  Rather than developers copying & pasting site artifacts like headers/footers/navigation/layout into every single page and burdening content authors with the task of manipulating raw HTML without corrupting it, a dynamic site lets developers create and manage those artifacts a single time (and thus changes to those artifacts are simple) while content authors can interact with a much more friendly content management experience (ex: a markdown file or a fully-featured content management system like [Strapi](https://strapi.io/)).
+
+The benefit of an SSG, then, is that it lets us have the best of both worlds:
+
+- The developer interacts with reusable code via source control
+- The content author interacts with a familiar content management system
+- The operator manages as little infrastructure as humanly possible
+
+For the purposes of a blog this is perfect unless and until the blogger wants to expose functionality like comments, forums and mailing lists.  But that's nerdery for a different blog post!
+
+### What is a content delivery network (CDN)?
+At its highest level a content delivery network is a collection of caching servers distributed across the globe.  When a client requests a web resource that sits behind a CDN, that client's traffic is directed to the geographically nearest "point of presence" (caching server) and the web resource is served from the CDN instead of traversing all the way to the underlying web server that hosts the uncached resource.  The benefits are myriad, but the biggest are:
+
+- Blog readers experience the lowest possible latency regardless of where in the world they live because the content is cached in hundreds of sites
+- The underlying web server doesn't need to worry very much about scaling out/up because it only handles uncached requests
+
+When wrapped by a content delivery network (CDN) a static site can well and truly reach billions of users all over the world while sitting on a pair of "dumb" web hosts having just a single core and 512MB of RAM each.
+### Key ingredients
+
+- [Razor SSG Web Template](https://razor-ssg.web-templates.io/posts/razor-ssg) provides static site generation capabilities for websites written in the Razor framework.
+- [GitHub](https://github.com) provides source control.
+- [Cloudflare Pages](https://developers.cloudflare.com/pages/framework-guides/deploy-a-blazor-site/) provides free hosting on a global CDN and native integration with GitHub for CI/CD.
+
+
+### Setting it all up
 
 #### Program.cs
 
