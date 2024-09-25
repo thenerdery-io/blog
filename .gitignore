@@ -8,6 +8,7 @@ meta/
 dist/
 .obsidian
 package-lock.json
+MyApp/wwwroot/img/unsplash_backup/
 
 # User-specific files
 *.suo

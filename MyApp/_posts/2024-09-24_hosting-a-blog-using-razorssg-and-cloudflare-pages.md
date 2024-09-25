@@ -1,10 +1,11 @@
 ---
 title: Hosting a blog using Razor SSG and Cloudflare Pages
 summary: How I host a modern blog for free using static HTML content and Cloudflare's global content delivery network
-tags:
-  - .net
-  - GitHub
-image: https://images.unsplash.com/photo-1618482914248-29272d021005?crop=entropy&fit=crop&h=1000&w=2000
+tags: [.net,GitHub]
+image: https://images.unsplash.com/photo-1499750310107-5fef28a66643?crop=entropy&fit=crop&h=1000&w=2000
+imageAltText: A laptop, smartphone, notepad and cup of coffee sitting on top of a desk
+imageAttribution: https://unsplash.com/@andrewtneel
+imageLicense: https://unsplash.com/license
 author: Zachary Johnson
 ---
 

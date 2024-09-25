@@ -42,6 +42,9 @@ public class MarkdownFileBase
     public string? Title { get; set; }
     public string? Summary { get; set; }
     public string? Image { get; set; }
+    public string? ImageAltText { get; set; }
+    public string? ImageAttribution { get; set; }
+    public string? ImageLicense { get; set; }
     public string? Author { get; set; }
     public List<string> Tags { get; set; } = new();
 
@@ -76,6 +79,9 @@ public class MarkdownFileBase
         Summary = newDoc.Summary;
         Draft = newDoc.Draft;
         Image = newDoc.Image;
+        ImageAltText = newDoc.ImageAltText;
+        ImageAttribution = newDoc.ImageAttribution;
+        ImageLicense = newDoc.ImageLicense;
         Author = newDoc.Author;
         Tags = newDoc.Tags;
         Content = newDoc.Content;
@@ -232,6 +238,9 @@ public abstract class MarkdownPagesBase<T>(ILogger log, IWebHostEnvironment env,
             Tags = x.Tags,
             Author = x.Author,
             Image = x.Image,
+            ImageAltText = x.ImageAltText,
+            ImageAttribution = x.ImageAttribution,
+            ImageLicense = x.ImageLicense,
             WordCount = x.WordCount,
             LineCount = x.LineCount,
             Url = x.Url,
@@ -314,11 +323,8 @@ public struct HeadingInfo(int level, string id, string content)
 /// <seealso cref="HtmlObjectRenderer{TObject}" />
 public class AutoLinkHeadingRenderer : HtmlObjectRenderer<HeadingBlock>
 {
-    public AutoLinkHeadingRenderer(string relativeHtmlPath)
-    {
-        this._relativeHtmlPath = relativeHtmlPath;
-    }
     private string _relativeHtmlPath;
+
     private static readonly string[] HeadingTexts = [
         "h1",
         "h2",
@@ -327,6 +333,11 @@ public class AutoLinkHeadingRenderer : HtmlObjectRenderer<HeadingBlock>
         "h5",
         "h6"
     ];
+    
+    public AutoLinkHeadingRenderer(string relativeHtmlPath)
+    {
+        this._relativeHtmlPath = relativeHtmlPath;
+    }
 
     public event Action<HeadingBlock>? OnHeading;
 
@@ -350,10 +361,6 @@ public class AutoLinkHeadingRenderer : HtmlObjectRenderer<HeadingBlock>
         var attrs = obj.TryGetAttributes();
         if (attrs?.Id != null && obj.Level <= 4)
         {
-            //renderer.Write("<a class=\"header-anchor\" href=\"javascript:;\" onclick=\"location.hash='#");
-            //renderer.Write($"🔗{attrs.Id}");
-            //renderer.Write("'\" aria-label=\"Permalink\">&ZeroWidthSpace;</a>");
-
             renderer.Write($"<a class=\"header-anchor\" href=\"{this._relativeHtmlPath}#{attrs.Id}\" aria-label=\"Permalink\">&ZeroWidthSpace;</a>");
         }
 
@@ -372,6 +379,7 @@ public class AutoLinkHeadingRenderer : HtmlObjectRenderer<HeadingBlock>
 public class AutoLinkHeadingsExtension : IMarkdownExtension
 {
     private string _relativeHtmlPath;
+
     public AutoLinkHeadingsExtension(string relativeHtmlPath)
     {
         this._relativeHtmlPath = relativeHtmlPath;
@@ -947,20 +955,22 @@ public static class MarkdigExtensions
     /// <summary>
     /// Uses the auto-identifier extension.
     /// </summary>
-    public static MarkdownPipelineBuilder UseAutoLinkHeadings(this MarkdownPipelineBuilder pipeline, object markdownFile)
+    public static MarkdownPipelineBuilder UseAutoLinkHeadings(this MarkdownPipelineBuilder pipeline, object input)
     {
         var relativeHtmlPath = string.Empty;
 
-        if(markdownFile.GetType() == typeof(MarkdownBlog))
+        if(input.GetType() == typeof(MarkdownBlog))
         {
-            var t = ((MarkdownBlog)markdownFile).VisiblePosts.FirstOrDefault();
-            if(t != null)
+            var post = ((MarkdownBlog)input).VisiblePosts.FirstOrDefault();
+
+            if(post != null)
             {
-                relativeHtmlPath = $"/posts/{t.Slug}";
+                relativeHtmlPath = $"/posts/{post.Slug}";
             }
         }
 
         pipeline.Extensions.AddIfNotAlready(new AutoLinkHeadingsExtension(relativeHtmlPath));
+
         return pipeline;
     }
 

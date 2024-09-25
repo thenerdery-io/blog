@@ -27,6 +27,8 @@
 
     var author = Blog.Authors.FirstOrDefault(x => x.Name == doc.Author);
     var image = doc.Image ?? Blog.FallbackSplashUrl;
+    var imageAltText = doc.ImageAltText;
+    var imageAttribution = doc.ImageAttribution;
 
     var docMjs = Blog.VirtualFiles.GetFile($"/wwwroot/posts/{doc.Slug}.mjs");
     var docCss = Blog.VirtualFiles.GetFile($"/wwwroot/posts/{doc.Slug}.css");
@@ -140,9 +142,10 @@
                 <div class="mb-4 max-w-sm" data-mail="JoinMailingList" data-props="{ submitLabel:'Join our newsletter' }"></div>
             </div>
             <div class="mb-8 md:mb-16 sm:mx-0">
-                <div class="sm:mx-0">
-                    <img src="@image" alt="@doc.Title Background" class="shadow-small">
-                </div>
+                <figure class="sm:mx-0">
+                    <img src="@image" alt="@imageAltText" class="shadow-small">
+                    <figcaption style="float:right;">@imageAltText</figcaption>
+                </figure>
             </div>
             <div class="flex max-w-3xl mx-auto justify-between">
                 <div>
@@ -174,6 +177,7 @@
                 <div id="post" class="prose lg:prose-xl max-w-none mb-32">
                     @Html.Raw(Blog.SanitizeVueTemplate(doc.Preview))
                 </div>
+                <div id="comments" data-post="PostComments" class="my-48">Comments are currently disabled...</div>
             </div>
         </article>
     }
@@ -184,8 +188,6 @@
         </h2>
     }
 </div>
-
-<div id="comments" data-post="PostComments" class="my-48"></div>
 
 @{
     var authorPosts = Blog.VisiblePosts.Where(x => x.Author == doc.Author && x.Slug != doc.Slug)
