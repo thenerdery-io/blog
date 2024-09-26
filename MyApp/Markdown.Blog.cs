@@ -21,8 +21,8 @@ public class BlogConfig
 
 public class AuthorInfo
 {
-    public string Name { get; set; }
-    public string ProfileUrl { get; set; }
+    public string? Name { get; set; }
+    public string? ProfileUrl { get; set; }
     public string? Bio { get; set; }
     public string? Email { get; set; }
     public string? GitHubUrl { get; set; }
@@ -105,7 +105,7 @@ public class MarkdownBlog(ILogger<MarkdownBlog> log, IWebHostEnvironment env, IV
 
     public string GetSplashImage(MarkdownFileInfo post)
     {
-        var splash = post.Image ?? FallbackSplashUrl; 
+        var splash = post.Image ?? FallbackSplashUrl;
         return splash.StartsWith("https://images.unsplash.com")
             ? splash.LeftPart('?') + "?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=420&q=80"
             : splash;

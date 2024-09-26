@@ -7,12 +7,16 @@ imageAltText: A laptop, smartphone, notepad and cup of coffee sitting on top of 
 imageAttribution: https://unsplash.com/@andrewtneel
 imageLicense: https://unsplash.com/license
 author: Zachary Johnson
+seriesName: hosting-a-blog
+seriesOrdinal: 1
 ---
 
-The number of choices for hosting a blog in 2024 is large enough to be downright paralyzing for mere mortals; between the multiple [hosting providers](https://blog.hubspot.com/website/best-blog-hosting-sites), numerous [content management systems](https://neilpatel.com/blog/best-content-management-systems/) and [frameworks](https://en.wikipedia.org/wiki/Web_framework), and an infinite number of themes and plugins there are literally millions of options.  While it's certainly possible to find turnkey blogging solutions—and realistically almost every blogger *should* do exactly that—I personally couldn't help but fall in love with the idea of static sites hosted for free on a global content delivery network.  From a reader perspective there's no better solution for performance, and for a webmaster there's no better solution in terms of security or cost.  It's really the best game in town if you're willing to do a bit of nerdery at the outset...
+The number of choices for hosting a blog in 2024 is large enough to be downright paralyzing for mere mortals; between the multiple [hosting providers](https://blog.hubspot.com/website/best-blog-hosting-sites), numerous [content management systems](https://neilpatel.com/blog/best-content-management-systems/) and [frameworks](https://en.wikipedia.org/wiki/Web_framework), and an infinite number of themes and plugins there are literally millions of options.  While it's certainly possible to find turnkey blogging solutions—and realistically almost every blogger *should* do exactly that—I personally couldn't help but fall in love with the idea of static sites hosted for free on a global content delivery network.  From a reader perspective there's no better solution for performance, and for a webmaster there's no better solution in terms of security or cost.  For the price of whatever domain name you prefer (which can also be had [for free](https://www.makeuseof.com/tag/5-best-dynamic-dns-providers-can-lookup-free-today/) if you're not into vanity names) and a little up-front nerdery, it's really the best game in town...
 
 ## Table of contents
-1. [What is a static site (generator)](/posts/how-my-blog-works#what-is-a-static-site-generator)
+1. [What is a static site (generator)](/posts/hosting-a-blog-using-razorssg-and-cloudflare-pages#what-is-a-static-site-generator)
+2. [What is a content delivery network (CDN)?](/posts/hosting-a-blog-using-razorssg-and-cloudflare-pages#what-is-a-content-delivery-network-cdn)
+3. [Architecture](/posts/hosting-a-blog-using-razorssg-and-cloudflare-pages#architecture)
 
 ### What is a static site (generator)?
 A static site is essentially a collection of content that needs no server-side rendering: html files and all of the associated cascading style sheets, images, javascript files, etc. hosted on a standalone web server.  A static site *generator* is simply a tool for converting a dynamic site into one that is static.
@@ -32,15 +36,24 @@ For the purposes of a blog this is perfect unless and until the blogger wants to
 ### What is a content delivery network (CDN)?
 At its highest level a content delivery network is a collection of caching servers distributed across the globe.  When a client requests a web resource that sits behind a CDN, that client's traffic is directed to the geographically nearest "point of presence" (caching server) and the web resource is served from the CDN instead of traversing all the way to the underlying web server that hosts the uncached resource.  The benefits are myriad, but the biggest are:
 
-- Blog readers experience the lowest possible latency regardless of where in the world they live because the content is cached in hundreds of sites
-- The underlying web server doesn't need to worry very much about scaling out/up because it only handles uncached requests
+- Blog readers experience the lowest possible latency regardless of where in the world they live because the content is cached in almost every country
+- The underlying web server doesn't need to worry very much about scaling out/up or paying for a ton of network/firewall bandwidth because it only handles uncached requests
 
 When wrapped by a content delivery network (CDN) a static site can well and truly reach billions of users all over the world while sitting on a pair of "dumb" web hosts having just a single core and 512MB of RAM each.
-### Key ingredients
+
+### Architecture
+<p align="center"><img src="/img/posts/hosting-a-blog-using-razorssg-and-cloudflare-pages/architecture-diagram.png"></p>
 
 - [Razor SSG Web Template](https://razor-ssg.web-templates.io/posts/razor-ssg) provides static site generation capabilities for websites written in the Razor framework.
 - [GitHub](https://github.com) provides source control.
 - [Cloudflare Pages](https://developers.cloudflare.com/pages/framework-guides/deploy-a-blazor-site/) provides free hosting on a global CDN and native integration with GitHub for CI/CD.
+- Optional:
+    - **(COMING SOON)** [Cloudflare Email Routing](https://blog.cloudflare.com/migrating-to-cloudflare-email-routing/) provides free email forwarding for a custom domain to any existing email account (ex: from zjohnson@thenerdery.io -> zjohnson@gmail.com)
+    - **(COMING SOON)** automating site content and configuration backups
+    - **(COMING SOON)** Blog comments
+    - **(COMING SOON)** Web traffic analysis
+    - **(COMING SOON)** Search engine optimization
+    - **(COMING SOON)** Monetization
 
 
 ### Setting it all up

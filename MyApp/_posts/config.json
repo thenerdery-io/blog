@@ -1,9 +1,5 @@
 {
-  "localBaseUrl": "https://localhost:5002",
-  "publicBaseUrl": "https://thenerdery.io",
-  "siteTwitter": "@TheNerdery",
   "blogTitle": "The Nerd Blog",
-  "blogDescription": "Writing about cloud, software, home IT projects and home improvement.",
-  "blogEmail": "zjohnson@thenerdery.io",
-  "blogImageUrl": "/img/nerdery_small.png"
+  "blogDescription": "Writing about the technology industry, cloud, software, computer hardware and home IT projects (and occasionally cars and building science).",
+  "SiteTwitter": "@TheNerdery"
 }

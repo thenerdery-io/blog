@@ -53,10 +53,10 @@
 
     void AuthorLinks()
     {
-        if (author?.GitHubUrl != null || author?.TwitterUrl != null || author?.ThreadsUrl != null || author?.MastodonUrl != null)
+        if (!author.GitHubUrl.IsNullOrEmpty() || !author.TwitterUrl.IsNullOrEmpty() || !author.ThreadsUrl.IsNullOrEmpty() || !author.MastodonUrl.IsNullOrEmpty())
         {
             <ul role="list" class="flex">
-                @if (author.TwitterUrl != null)
+                @if (!author.TwitterUrl.IsNullOrEmpty())
                 {
                     <li>
                         <a title="Follow on Twitter" class="mr-1 group flex text-sm font-medium text-zinc-800 transition hover:text-indigo-500 dark:text-zinc-200 dark:hover:text-indigo-500" href="@author.TwitterUrl">
@@ -66,7 +66,7 @@
                         </a>
                     </li>
                 }
-                @if (author.ThreadsUrl != null)
+                @if (!author.ThreadsUrl.IsNullOrEmpty())
                 {
                     <li>
                         <a title="Follow on threads.net" class="mr-1 group flex text-sm font-medium text-zinc-800 transition hover:text-indigo-500 dark:text-zinc-200 dark:hover:text-indigo-500" href="@author.ThreadsUrl">
@@ -76,7 +76,7 @@
                         </a>
                     </li>
                 }
-                @if (author.MastodonUrl != null)
+                @if (!author.MastodonUrl.IsNullOrEmpty())
                 {
                     <li>
                         <a title="Follow on Mastodon" class="mr-1 group flex text-sm font-medium text-zinc-800 transition hover:text-indigo-500 dark:text-zinc-200 dark:hover:text-indigo-500" href="@author.MastodonUrl">
@@ -86,7 +86,7 @@
                         </a>
                     </li>
                 }
-                @if (author.GitHubUrl != null)
+                @if (!author.GitHubUrl.IsNullOrEmpty())
                 {
                     <li>
                         <a title="Follow on GitHub" class="mr-1 group flex text-sm font-medium text-zinc-800 transition hover:text-indigo-500 dark:text-zinc-200 dark:hover:text-indigo-500" href="@author.GitHubUrl">
@@ -96,7 +96,7 @@
                         </a>
                     </li>
                 }
-                @if (author.Email != null)
+                @if (!author.Email.IsNullOrEmpty())
                 {
                     <li>
                         <a title="Email @author.Name" href="mailto:@author.Email" class="mr-1 group flex text-sm font-medium text-zinc-800 transition hover:text-indigo-500 dark:text-zinc-200 dark:hover:text-indigo-500">
@@ -190,46 +190,19 @@
 </div>
 
 @{
-    var authorPosts = Blog.VisiblePosts.Where(x => x.Author == doc.Author && x.Slug != doc.Slug)
-        .OrderByDescending(x => x.Date)
-        .Take(4)
+    var postSeries = Blog.VisiblePosts.Where(x => x.SeriesName == doc.SeriesName && x.Slug != doc.Slug)
+        .OrderByDescending(x => x.SeriesOrdinal)
         .ToList();
-    if (author != null && authorPosts.Count > 0)
+    if (postSeries.Count > 0)
     {
-        var authorHref = Blog.GetAuthorLink(author?.Name);
-        var authorProfileUrl = Blog.GetAuthorProfileUrl(doc.Author);
-
-        <div class="bg-gray-50 py-20">
+        <div class="py-20">
             <div class="max-w-3xl mx-auto">
-                <div class="flex justify-between">
-                    <div>
-                        @if (authorHref != null)
-                        {
-                            <a href="@authorHref"><img class="w-20 h-20 rounded-full text-cyan-600" src="@authorProfileUrl"></a>
-                        }
-                        else
-                        {
-                            <img class="w-20 h-20 rounded-full text-cyan-600" src="@authorProfileUrl">
-                        }
-
-                        <div class="mt-2 font-medium text-2xl">
-                            Written by @doc.Author
-                        </div>
-                        <div class="text-gray-600">
-                            @author.Bio
-                        </div>
-                    </div>
-                    <div class="flex items-end">
-                        @{ AuthorLinks(); }
-                    </div>
-                </div>
-
                 <div class="mt-4 border-t">
                     <div class="py-8 text-lg text-gray-700 font-medium">
-                        More from @author.Name
+                        More from this series
                     </div>
                     <div class="grid grid-cols-2 gap-8">
-                        @foreach (var post in authorPosts)
+                        @foreach (var post in postSeries)
                         {
                             <div>
                                 <div class="flex flex-col overflow-hidden">
@@ -241,7 +214,7 @@
                                     <div class="flex flex-1 flex-col justify-between bg-white dark:bg-black p-6">
                                         <div class="flex-1">
                                             <p class="text-sm font-medium text-indigo-600 dark:text-indigo-300">
-                                                Article
+                                                Post @post.SeriesOrdinal
                                             </p>
                                             <a href="@Blog.GetPostLink(post)" class="mt-2 block">
                                                 <p class="text-xl font-semibold text-gray-900 dark:text-gray-50 whitespace-nowrap overflow-hidden text-ellipsis" title="@post.Title">
@@ -259,14 +232,7 @@
                                             </div>
                                             <div class="ml-3">
                                                 <p class="text-sm font-medium text-gray-900">
-                                                    @if (authorHref != null)
-                                                    {
-                                                        <a href="@Blog.GetAuthorLink(post.Author!)" class="hover:underline">@post.Author</a>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span>@post.Author</span>
-                                                    }
+                                                    <a href="@Blog.GetAuthorLink(post.Author!)" class="hover:underline">@post.Author</a>
                                                 </p>
                                                 <div class="flex space-x-1 text-sm text-gray-500">
                                                     <time datetime="@Blog.GetDateTimestamp(post.Date)">@Blog.GetDateLabel(post.Date)</time>
@@ -277,7 +243,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         }                        
                     </div>

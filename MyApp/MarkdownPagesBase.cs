@@ -46,6 +46,8 @@ public class MarkdownFileBase
     public string? ImageAttribution { get; set; }
     public string? ImageLicense { get; set; }
     public string? Author { get; set; }
+    public string? SeriesName { get; set; }
+    public int? SeriesOrdinal { get; set; }
     public List<string> Tags { get; set; } = new();
 
     /// <summary>
@@ -82,6 +84,8 @@ public class MarkdownFileBase
         ImageAltText = newDoc.ImageAltText;
         ImageAttribution = newDoc.ImageAttribution;
         ImageLicense = newDoc.ImageLicense;
+        SeriesName = newDoc.SeriesName;
+        SeriesOrdinal = newDoc.SeriesOrdinal;
         Author = newDoc.Author;
         Tags = newDoc.Tags;
         Content = newDoc.Content;
@@ -241,6 +245,8 @@ public abstract class MarkdownPagesBase<T>(ILogger log, IWebHostEnvironment env,
             ImageAltText = x.ImageAltText,
             ImageAttribution = x.ImageAttribution,
             ImageLicense = x.ImageLicense,
+            SeriesName = x.SeriesName,
+            SeriesOrdinal = x.SeriesOrdinal,
             WordCount = x.WordCount,
             LineCount = x.LineCount,
             Url = x.Url,
